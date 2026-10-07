@@ -1,0 +1,4 @@
+[submodule "lightrover_e32_description"]
+	path = lightrover_e32_description
+	url = https://github.com/vstoneofficial/lightrover_e32_description.git
+	branch = humble

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<robot name="lightrover_e32_robot">
+
+  <material name="lightrover_e32_white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+  <!-- ROS convention:
+       base_link +X forward, +Y left, +Z up
+  -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.02575" rpy="1.5708 0 1.5708"/>
+      <geometry>
+        <mesh filename="package://lightrover_e32_description/meshes/body.stl"
+              scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="lightrover_e32_white"/>
+    </visual>
+  </link>
+
+  <link name="left_wheel_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
+      <geometry>
+        <mesh filename="package://lightrover_e32_description/meshes/wheel.stl"/>
+      </geometry>
+      <material name="lightrover_e32_white"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_left_wheel" type="fixed">
+    <parent link="base_link"/>
+    <child link="left_wheel_link"/>
+    <origin xyz="0 0.058 0.030" rpy="0 0 0"/>
+  </joint>
+
+  <link name="right_wheel_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
+      <geometry>
+        <mesh filename="package://lightrover_e32_description/meshes/wheel.stl"/>
+      </geometry>
+      <material name="lightrover_e32_white"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_right_wheel" type="fixed">
+    <parent link="base_link"/>
+    <child link="right_wheel_link"/>
+    <origin xyz="0 -0.058 0.030" rpy="0 0 0"/>
+  </joint>
+
+  <link name="laser_frame">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <mesh filename="package://lightrover_e32_description/meshes/lidar.stl"/>
+      </geometry>
+      <material name="lightrover_e32_white"/>
+    </visual>
+  </link>
+  <joint name="base_to_laser" type="fixed">
+    <parent link="base_link"/>
+    <child link="laser_frame"/>
+    <origin xyz="-0.030 0 0.1125" rpy="0 0 -1.5708"/>
+  </joint>
+
+  <link name="imu_link"/>
+  <joint name="base_to_imu" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0.052 0 0.0416" rpy="0 0 -1.5708"/>
+  </joint>
+
+</robot>
