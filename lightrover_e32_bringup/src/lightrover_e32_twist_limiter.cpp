@@ -5,6 +5,7 @@
 #include <string>
 
 #include "geometry_msgs/msg/twist.hpp"
+#include "geometry_msgs/msg/twist_stamped.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 using namespace std::chrono_literals;
@@ -30,10 +31,20 @@ public:
     }
 
     pub_ = create_publisher<geometry_msgs::msg::Twist>(output_topic_, 10);
-    sub_ = create_subscription<geometry_msgs::msg::Twist>(
-      input_topic_,
-      10,
-      std::bind(&DroverTwistLimiter::twist_callback, this, std::placeholders::_1));
+    const bool input_stamped = declare_parameter<bool>("input_stamped", false);
+    if (input_stamped) {
+      stamped_sub_ = create_subscription<geometry_msgs::msg::TwistStamped>(
+        input_topic_, 10,
+        [this](geometry_msgs::msg::TwistStamped::ConstSharedPtr msg) {
+          twist_callback(msg->twist);
+        });
+    } else {
+      sub_ = create_subscription<geometry_msgs::msg::Twist>(
+        input_topic_, 10,
+        [this](geometry_msgs::msg::Twist::ConstSharedPtr msg) {
+          twist_callback(*msg);
+        });
+    }
 
     const auto period = std::chrono::duration<double>(1.0 / publish_rate_);
     timer_ = create_wall_timer(
@@ -52,14 +63,14 @@ public:
   }
 
 private:
-  void twist_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
+  void twist_callback(const geometry_msgs::msg::Twist & msg)
   {
-    last_command_.linear.x = clamp(msg->linear.x, max_linear_x_);
+    last_command_.linear.x = clamp(msg.linear.x, max_linear_x_);
     last_command_.linear.y = 0.0;
     last_command_.linear.z = 0.0;
     last_command_.angular.x = 0.0;
     last_command_.angular.y = 0.0;
-    last_command_.angular.z = clamp(msg->angular.z, max_angular_z_);
+    last_command_.angular.z = clamp(msg.angular.z, max_angular_z_);
     last_command_time_ = now();
   }
 
@@ -89,6 +100,7 @@ private:
   rclcpp::Time last_command_time_;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_;
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_;
+  rclcpp::Subscription<geometry_msgs::msg::TwistStamped>::SharedPtr stamped_sub_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 

@@ -10,13 +10,15 @@ def generate_launch_description():
     max_angular_z = LaunchConfiguration('max_angular_z')
     publish_rate = LaunchConfiguration('publish_rate')
     command_timeout = LaunchConfiguration('command_timeout')
+    input_stamped = LaunchConfiguration('input_stamped')
 
     mouse_teleop_node = Node( 
         package='mouse_teleop', 
         executable='mouse_teleop', 
         name='mouse_teleop',
         output='screen',
-        remappings=[('/mouse_vel', '/lightrover_e32_teleop_raw')]
+        parameters=[{'frequency': ParameterValue(publish_rate, value_type=float)}],
+        remappings=[('/mouse_vel', '/lightrover_e32_mouse_raw')]
     )
 
     twist_limiter_node = Node(
@@ -26,7 +28,8 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {
-                'input_topic': '/lightrover_e32_teleop_raw',
+                'input_topic': '/lightrover_e32_mouse_raw',
+                'input_stamped': ParameterValue(input_stamped, value_type=bool),
                 'output_topic': '/rover_twist',
                 'max_linear_x': ParameterValue(max_linear_x, value_type=float),
                 'max_angular_z': ParameterValue(max_angular_z, value_type=float),
@@ -37,6 +40,10 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'input_stamped', default_value='true',
+            description='Use false for older mouse_teleop versions publishing Twist.',
+        ),
         DeclareLaunchArgument('max_linear_x', default_value='0.10'),
         DeclareLaunchArgument('max_angular_z', default_value='1.0'),
         DeclareLaunchArgument('publish_rate', default_value='20.0'),

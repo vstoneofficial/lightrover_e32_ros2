@@ -80,15 +80,17 @@ def generate_launch_description():
             }.items(),
             condition=IfCondition(use_keyboard_teleop),
         ),
-        Node(
-            package='slam_toolbox',
-            executable='async_slam_toolbox_node',
-            name='slam_toolbox',
-            output='screen',
-            parameters=[
-                slam_params_file,
-                {'use_sim_time': use_sim_time},
-            ],
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(
+                get_package_share_directory('slam_toolbox'),
+                'launch', 'online_async_launch.py',
+            )),
+            launch_arguments={
+                'slam_params_file': slam_params_file,
+                'use_sim_time': use_sim_time,
+                'autostart': 'true',
+                'use_lifecycle_manager': 'false',
+            }.items(),
         ),
         Node(
             package='rviz2',
