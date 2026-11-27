@@ -1,0 +1,12 @@
+# 実機に近づけた設定 (sim.launch.py realism:=real、既定)
+# 値は目安です。実機の様子を見て調整してください。
+il_sim:
+  ros__parameters:
+    range_noise: 0.01     # LiDAR 距離ノイズ [m]
+    dropout: 0.02         # LiDAR 計測抜けの割合
+    range_min: 0.12       # これより近い物は測れない [m] (E32 の LiDAR)
+    range_max: 8.0
+    cmd_delay: 0.10       # 指令の遅れ [s]
+    linear_gain: 1.0      # 実際の速度 / 指令速度
+    angular_gain: 1.0     # 実際の旋回 / 指令旋回
+    motion_noise: 0.05    # 動きのばらつき (相対値)
