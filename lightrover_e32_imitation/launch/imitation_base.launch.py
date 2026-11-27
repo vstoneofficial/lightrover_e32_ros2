@@ -49,6 +49,9 @@ def generate_launch_description():
         Node(
             package='mouse_teleop', executable='mouse_teleop', name='il_mouse_teleop',
             output='screen',
+            # frequency を指定しないと、マウスを動かした瞬間にしか指令を出さない。
+            # ボタンを押したままマウスを止めると指令が途絶え、0.5秒でロボットが止まってしまう
+            parameters=[{'frequency': 20.0}],
             remappings=[('/mouse_vel', '/il/human_cmd')],
             condition=LaunchConfigurationEquals('teleop', 'mouse'),
         ),

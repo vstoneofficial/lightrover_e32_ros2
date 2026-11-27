@@ -1,0 +1,12 @@
+# ノイズも遅れもない理想的な設定 (sim.launch.py realism:=ideal)
+# ここで学習したモデルが実機 (や realism:=real) でどうなるかを比べる実験用
+il_sim:
+  ros__parameters:
+    range_noise: 0.0
+    dropout: 0.0
+    range_min: 0.0
+    range_max: 8.0
+    cmd_delay: 0.0
+    linear_gain: 1.0
+    angular_gain: 1.0
+    motion_noise: 0.0

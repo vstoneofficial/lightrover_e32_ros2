@@ -12,6 +12,9 @@ setup(
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml', 'README.md']),
         ('share/' + package_name + '/launch', glob('launch/*.launch.py')),
+        ('share/' + package_name + '/courses', glob('courses/*.yaml')),
+        ('share/' + package_name + '/config', glob('config/*.yaml')),
+        ('share/' + package_name + '/rviz', glob('rviz/*.rviz')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,6 +29,7 @@ setup(
             'il_cmd_mux = lightrover_e32_imitation.cmd_mux:main',
             'il_policy = lightrover_e32_imitation.policy_node:main',
             'il_train = lightrover_e32_imitation.train:main',
+            'il_sim = lightrover_e32_imitation.sim_node:main',
         ],
     },
 )
